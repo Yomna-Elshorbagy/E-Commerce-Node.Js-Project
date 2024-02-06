@@ -26,10 +26,7 @@ let couponschema = new mongoose.Schema({
     expireIn:{
         type:Date,
         required: [true, "Coupon expire time requied"]
-    },
-    autoUpdateExpireIn: { 
-        type: Boolean, 
-        state : false }
+    }
 
 },{
     timestamps:true

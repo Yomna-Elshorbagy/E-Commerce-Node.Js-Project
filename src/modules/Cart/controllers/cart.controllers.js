@@ -193,15 +193,55 @@ console.log(userCart)
 };
 
 
+// export const updateCart = async (req, res) => {
+//     try {
+//         if (!req.userid) {
+//             return res.status(401).json({ status: "FAIL", data: { message: "You do not have permission to update the Cart" } });
+//         }
+
+//         const cartId = req.params.cartId;
+//         const productIdToUpdate = req.params.productIdToUpdate; 
+//         const updates = req.body; 
+
+//         // Check if the cart exists
+//         const existingCart = await CartModel.findById(cartId);
+
+//         if (!existingCart) {
+//             return res.status(404).json({ status: "FAIL", data: { message: 'Cart not found' } });
+//         }
+
+//         // Check if the user has permission to update this cart
+//         if (existingCart.orderBy.toString() !== req.userid) {
+//             return res.status(403).json({ status: "FAIL", data: { message: 'You do not have permission to update this cart' } });
+//         }
+
+//         // Find the index of the product to update in the cart
+//         const productIndex = existingCart.cart.findIndex(product => product.product.toString() === productIdToUpdate);
+
+//         if (productIndex === -1) {
+//             return res.status(404).json({ status: "FAIL", data: { message: 'Product not found in the cart' } });
+//         }
+
+//         // Apply partial updates to the specific product
+//         Object.assign(existingCart.cart[productIndex], updates);
+
+//         // Save the updated cart
+//         const updatedCart = await existingCart.save();
+
+//         res.status(200).json({ status: "SUCCESS", message: "Cart updated successfully", data: updatedCart });
+//     } catch (error) {
+//         res.status(500).json({ status: "ERROR", message: error.message, data: null });
+//     }
+// };
+
 export const updateCart = async (req, res) => {
     try {
         if (!req.userid) {
             return res.status(401).json({ status: "FAIL", data: { message: "You do not have permission to update the Cart" } });
         }
-
         const cartId = req.params.cartId;
-        const productIdToUpdate = req.params.productIdToUpdate; 
-        const updates = req.body; 
+        const productIdToUpdate = req.params.productIdToUpdate;
+        const updates = req.body;
 
         // Check if the cart exists
         const existingCart = await CartModel.findById(cartId);
@@ -222,8 +262,13 @@ export const updateCart = async (req, res) => {
             return res.status(404).json({ status: "FAIL", data: { message: 'Product not found in the cart' } });
         }
 
-        // Apply partial updates to the specific product
-        Object.assign(existingCart.cart[productIndex], updates);
+        // Update the count of the specific product
+        existingCart.cart[productIndex].count = updates.count;
+
+        // Recalculate the total price and total price after discount in the cart
+         existingCart.totalPrice = existingCart.cart.reduce((total, product) => total + (product.price * product.count), 0);
+        
+        //existingCart.priceAfterDiscount = existingCart.cart.reduce((total, product) => total + (product.priceAfterDiscount * product.count), 0);
 
         // Save the updated cart
         const updatedCart = await existingCart.save();

@@ -77,10 +77,10 @@ export const signIn = async (req, res, next) => {
 export const updateUser = async (req, res) => {
   let foundedUser = await userModel.findById(req.params.id);
   if (foundedUser) {
-    let { userName, age, email } = req.body;
+    let { userName, age, email , address} = req.body;
     let updateduser = await userModel.findByIdAndUpdate(
       foundedUser._id,
-      { userName, age, email },
+      { userName, age, email, address },
       { new: true }
     );
     res.json({ message: "Updated", updateduser });
@@ -199,7 +199,6 @@ export const resetPassword = async (req, res) => {
 export const deactivateUser = async (req, res) => {
   try {
     const { email } = req.body;
-
     const deactivatedUser = await userModel.findOneAndUpdate(
       { email },
       { $set: { isActive: false } },
@@ -211,7 +210,10 @@ export const deactivateUser = async (req, res) => {
     } else {
       return res.status(404).json({ message: "User not found" });
     }
+ 
   } catch (error) {
     res.status(500).json({ message: error.message, data: null });
   }
 };
+
+

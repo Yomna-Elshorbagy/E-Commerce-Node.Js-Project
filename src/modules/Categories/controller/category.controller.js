@@ -22,9 +22,9 @@ export const addimg = upload.single('image');
 export const addcategory = async (req, res) => {
     const { categoryName, image } = req.body;
     const createdBy = await userModel.findById(req.body.createdBy)
+
     const foundedCategory = await Categorymodel.findOne({
         categoryName: categoryName,
-      
     });
     if (foundedCategory) return res.send({ message: "category already exists" });
     const newCategory = await Categorymodel.insertMany({
@@ -69,41 +69,7 @@ export const getCategoryByName = async (req, res) => {
   }
 };
 
-export const updateCategoryy = async (req,res)=>{
-  let category =await Categorymodel.findOne({categoryName: req.body.categoryName})
-  if(category){
-    category.image=req.body.image
-      await category.save();
-      res.json({message:"Updated", category})
-  }else{
-      res.json({message:"category not found"})
-  }
-}
-
-// export const updateCategory = async (req, res) => {
-//   try {
-//     const categoryId = req.params.id;
-//     const { categoryName, image } = req.body;
-//     const category = await Categorymodel.findById(categoryId);
-
-//     if (!category) {
-//       return res.json({ message: "category not found" });
-//     }
-//     if (category.createdBy == req.createdBy) {
-//       await Categorymodel.findByIdAndUpdate(categoryId, {
-//         categoryName,
-//         image,
-//       });
-//       const newCategory = await Categorymodel.findById(categoryId);
-//       res.send({ newCategory: newCategory });
-//     } else {
-//       res.send({ message: "Not authorized to update this category" });
-//     }
-//   } catch (error) {
-//     res.send({ error: error.message });
-//   }
-// };
-// // Update category
+ // Update category
 export const updateCategory = async (req, res) => {
   try {
       const categoryId = req.params.categoryId;

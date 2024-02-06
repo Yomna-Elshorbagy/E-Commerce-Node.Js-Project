@@ -7,6 +7,7 @@ export const auth =(req, res, next)=>{
     console.log(authorization)
     let token = authorization.split(" ")[1]
     Jwt.verify(token, "yomna",async (err,decoded)=>{
+      console.log(decoded)
         if (err) return res.json({message: "token error", err});
         const user = await userModel.findById(decoded.id)
         console.log(user)

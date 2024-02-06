@@ -19,6 +19,11 @@ export const image = upload.single('productImage')
 
 export const addProduct = async (req, res) => {
     try {
+        const existingProduct = await productModel.findOne({ productName: req.body.productName });
+
+        if (existingProduct) {
+            return res.status(400).json({ status: "FAIL", data: { message: "A product with the same name already exists" } });
+        }
         if (req.userid !== req.body.createdBy) {
             return res.status(401).json({ status: "FAIL", data: { message: "You do not have permission to add product" } });
         }
@@ -40,7 +45,8 @@ export const addProduct = async (req, res) => {
             priceAfterDiscount: priceAfterDiscount,
             productImage: req.file.filename,
             category: req.body.category,
-            createdBy: req.body.createdBy,
+            // createdBy: req.body.createdBy,
+            createdBy: req.userid,
             stock:req.body.stock,
         });
 
@@ -104,7 +110,7 @@ export const updateProduct = async (req, res) => {
 
         res.status(200).json({ status: "SUCCESS", data: { updateProduct } });
     } catch (error) {
-        console.error(error); // Log the error for debugging
+        console.error(error); 
         res.status(500).json({ status: "ERROR", message: error.message, data: null });
     }
 };

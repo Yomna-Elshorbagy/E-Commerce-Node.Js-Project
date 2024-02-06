@@ -6,7 +6,6 @@ import { adminAuth, auth } from "../../middleware/auth.js";
 const userRoutes = express.Router()
 
 //add user 
-// userRoutes.post("/addusers/signup",validation(addUserSchema), signUp)//signup
 userRoutes.post("/users/signup",validation(addUserSchema), signUp)//signup
 userRoutes.post("/users/signin", signIn) //signin
 
@@ -18,7 +17,6 @@ userRoutes.get('/user/verify/:token', verification)
 
 //updateuser:
 userRoutes.patch("/user/:id",validation(updateuservalidation),adminAuth, updateUser)
-// userRoutes.patch("/user",adminAuth, updateUser)
 
 //deleteuser:
 
@@ -35,6 +33,9 @@ userRoutes.patch("/user/:id",validation(updateuservalidation),adminAuth, updateU
 //delete using params
 userRoutes.delete("/user/:id", deleteUser)
 
+//deactivated
+userRoutes.post('/deactivateUser', adminAuth, deactivateUser);
+
 //sorted users
 userRoutes.get("/sortedUser", sortedUsers)
 
@@ -42,10 +43,8 @@ userRoutes.get("/sortedUser", sortedUsers)
 userRoutes.post('/forgetPassword', forgetPassword);
 userRoutes.post('/verifyCode', verifyCode); 
 userRoutes.post('/resetPassword', validation(resetPasswordSchema), resetPassword); 
-//userRoutes.post('/resetPassword', resetPassword); 
 
-//deactivated
-userRoutes.post('/deactivateUser', auth, deactivateUser);
+
 
 
 
