@@ -36,7 +36,6 @@ export const deletedBy = async (req, res) => {
   try {
     const couponId = req.params.id;
 
-    // Assuming you have authentication middleware to get the admin user ID
     const deletedBy = req.userid;
 
     const expireIn = new Date(); // Set to current date to mark it as expired
@@ -68,33 +67,6 @@ export const getAllCoupons = async (req, res) => {
   }
 };
 
-///////////////////////////////////////////////////
-// export const updatedCouponByid = async (req, res) => {
-//   try {
-//     const couponId = req.params.id;
-//     const { couponCode, value, expireIn } = req.body;
-//     const user = await userModel.findById(req.userid);
-//     const coupon = await couponModel.findById(couponId);
-
-//     if (user._id.equals(coupon.createdBy) || user.role === "admin") {
-//       const updatedCoupon = await couponModel.findByIdAndUpdate(
-//         couponId,
-//         { couponCode, value, expireIn },
-//         { new: true }
-//       );
-//       if (!updatedCoupon) {
-//         return res.json({ message: "Coupon not found" });
-//       }
-
-//       res.json(updatedCoupon);
-//     } else {
-//       return res.json({ message: "Unauthorized" });
-//     }
-//   } catch (error) {
-//     res.status(500).json({ error: error.message });
-//   }
-// };
-///////////////////////////////////////////////////////
 
 export const updatedCouponByid = async (req, res) => {
   try {
