@@ -17,24 +17,40 @@ export const updateuservalidation = Joi.object({
   email: Joi.string().email().required(),
 });
 
-export const resetPasswordSchema = {
-  body: Joi.object()
-    .required()
-    .keys({
+// export const resetPasswordSchema = {
+//   body: Joi.object()
+//     .required()
+//     .keys({
+//       password: Joi.string()
+//         .pattern(
+//           new RegExp(
+//             // /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&.])[A-Za-z\d@$!%*?&.]+$/
+//             /^[A-Z][a-z0-9]{3,8}$/
+//           )
+//         )
+//         .required()
+//         .messages({
+//           "string.pattern.base":
+//             "Password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character from @$!%*?&.",
+//         }),
+//       email: Joi.string().email().required(),
+//     }),
+//};
+
+export const resetPasswordSchema ={
+  body: Joi.object().required()
+  .keys({
       password: Joi.string()
-        .pattern(
-          new RegExp(
-            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&.])[A-Za-z\d@$!%*?&.]+$/
-          )
-        )
-        .required()
-        .messages({
-          "string.pattern.base":
-            "Password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character from @$!%*?&.",
-        }),
-      email: Joi.string().email().required(),
+    .pattern(new RegExp(/^[A-Z][a-z0-9]{3,8}$/))
+    .required()
+    .messages({
+      'string.pattern.base':
+        'Password must be strong',
     }),
-};
+      email: Joi.string().required()
+  }),
+
+}
 
 // export  const updateuservalidation = Joi.object({
 //     id:Joi.string().hex().min(24).max(24).required(),

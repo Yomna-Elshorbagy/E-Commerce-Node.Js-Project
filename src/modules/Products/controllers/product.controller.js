@@ -16,7 +16,6 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 export const image = upload.single('productImage')
 
-
 export const addProduct = async (req, res) => {
     try {
         const existingProduct = await productModel.findOne({ productName: req.body.productName });
@@ -43,7 +42,7 @@ export const addProduct = async (req, res) => {
             ProductPrice: req.body.ProductPrice,
             discount: discount,
             priceAfterDiscount: priceAfterDiscount,
-            productImage: req.file.filename,
+            productImage: "http://localhost:5000/uploads/" + req.file.filename,
             category: req.body.category,
             // createdBy: req.body.createdBy,
             createdBy: req.userid,
@@ -153,7 +152,7 @@ export const getProductById = async (req, res) => {
 export const getAllProducts = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
-        const limit = parseInt(req.query.limit) || 10;
+        const limit = parseInt(req.query.limit) || 100;
 
         const products = await productModel.find()
             .skip((page - 1) * limit)
@@ -181,3 +180,51 @@ export const getProductsByCategory = async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
   };
+
+
+  export const updateProductt = async (req, res) => {
+    try {
+        const productId = req.params.productId;
+        const { stock, discount, productPrice } = req.body;
+
+        const product = await productModel.findById(productId);
+
+        if (!product) {
+            return res.status(404).json({ status: "FAIL", data: { message: 'Product not found' } });
+        }
+
+        // Ensure productPrice is a valid number
+        const newProductPrice = typeof productPrice === 'number' ? productPrice : product.ProductPrice;
+
+        // Ensure discount is a valid number
+        const newDiscount = typeof discount === 'number' ? discount : product.discount;
+
+        // Check if both productPrice and discount are valid numbers
+        if (typeof newProductPrice !== 'number' || typeof newDiscount !== 'number') {
+            return res.status(400).json({ status: "FAIL", data: { message: 'Invalid values for productPrice or discount' } });
+        }
+
+        // Calculate the price after discount
+        const newPriceAfterDiscount = newProductPrice - (newProductPrice * (newDiscount / 100));
+
+        // Update the product
+        const updateProduct = await productModel.findOneAndUpdate(
+            { _id: productId, createdBy: req.userid },
+            {
+                $set: {
+                    stock,
+                },
+            },
+            { new: true }
+        );
+
+        if (!updateProduct) {
+            return res.status(404).json({ status: "FAIL", data: { message: 'Product not found' } });
+        }
+
+        res.status(200).json({ status: "SUCCESS", data: { updateProduct } });
+    } catch (error) {
+        console.error(error); 
+        res.status(500).json({ status: "ERROR", message: error.message, data: null });
+    }
+};

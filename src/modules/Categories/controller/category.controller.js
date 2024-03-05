@@ -29,7 +29,7 @@ export const addcategory = async (req, res) => {
     if (foundedCategory) return res.send({ message: "category already exists" });
     const newCategory = await Categorymodel.insertMany({
       categoryName,
-      image:req.file.filename,
+      image:"http://localhost:5000/uploads/" + req.file.filename,
       createdBy,
     });
     res.send({ message: "category created", category: newCategory });

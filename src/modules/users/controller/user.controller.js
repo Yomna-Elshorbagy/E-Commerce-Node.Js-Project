@@ -25,7 +25,7 @@ export const signUp = async (req, res) => {
   let foundeduser = await userModel.findOne({ email: req.body.email });
   console.log(foundeduser);
   if (foundeduser) {
-    res.send("user already rejester ");
+    res.json({ message: "User alredy register" });
   } else {
     let hashedpassword = bcrypt.hashSync(password, 10);
     let addeduser = await userModel.insertMany({
@@ -55,6 +55,7 @@ export const verification = async (req, res) => {
     res.json({ message: "verification Done", updateduser });
   });
 };
+
 
 export const signIn = async (req, res, next) => {
   let { email, password } = req.body;
@@ -107,6 +108,57 @@ export const sortedUsers = async (req, res) => {
     res.json({ message: "user not found" });
   }
 };
+
+export const getUserById = async (req, res) => {
+  try {
+      const userId = req.params.id;
+
+      const user = await userModel.findById(userId);
+
+      if (user) {
+          res.json({ user });
+      } else {
+          res.json({ message: 'user not found' });
+      }
+  } catch (error) {
+      res.json({ message: error.message, data: null });
+  }
+};
+
+import express from 'express';
+
+const router = express.Router();
+
+// Endpoint to get user profile
+router.get('/user/profile', verification, async (req, res) => {
+  try {
+    // Get user ID from decoded token
+    const userId = req.userId;
+
+    // Fetch user profile data from the database
+    const user = await userModel.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Send user profile data in response
+    res.status(200).json({
+      userName: user.userName,
+      email: user.email,
+      age: user.age,
+      address: user.address
+      // You can include other fields as needed
+    });
+  } catch (error) {
+    console.error("Error fetching user profile:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+export default router;
+
+
 export const securePassword = async (password) => {
   const saltRounds = 10;
 
@@ -188,7 +240,9 @@ export const resetPassword = async (req, res) => {
         .json({ status: "error", message: "User not found", data: null });
     }
 
-    res.json("reset success");
+    // res.json("reset success");
+    res.json({message: "reset success"});
+
   } catch (error) {
     res
       .status(500)
@@ -204,7 +258,6 @@ export const deactivateUser = async (req, res) => {
       { $set: { isActive: false } },
       { new: true }
     );
-
     if (deactivatedUser) {
       return res.status(200).json({ message: "User deactivated successfully" });
     } else {

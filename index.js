@@ -25,6 +25,8 @@ server.use(categoryRoutes)
 server.use(productsRoutes)
 server.use(couponeRoutes)
 server.use(cartRoutes)
+server.use('/uploads', express.static('uploads'));
+
 
 
 

@@ -153,7 +153,7 @@ export const createOrder = async (req, res) => {
         if (!Array.isArray(userCart.cart)) {
             return res.status(404).json({ status: "FAIL", data: { message: "User cart products not found or not in the expected format" } });
         }
-console.log(userCart)
+        console.log(userCart)
         let finalPrice = 0;
         if (couponApplied && userCart.priceAfterDiscount) {
             finalPrice = userCart.priceAfterDiscount;
