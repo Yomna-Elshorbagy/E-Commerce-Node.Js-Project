@@ -246,7 +246,7 @@ export const resetPassword = async (req, res) => {
   } catch (error) {
     res
       .status(500)
-      .json({ status: "error", message: error.message, data: null });
+      .json({ status: "fail", message: error.message, data: null });
   }
 };
 
