@@ -192,47 +192,47 @@ export const createOrder = async (req, res) => {
     }
 };
 
-// export const updateCart = async (req, res) => {
-//     try {
-//         if (!req.userid) {
-//             return res.status(401).json({ status: "FAIL", data: { message: "You do not have permission to update the Cart" } });
-//         }
-//         const cartId = req.params.cartId;
-//         const productIdToUpdate = req.params.productIdToUpdate;
-//         const updates = req.body;
+export const updateCart = async (req, res) => {
+    try {
+        if (!req.userid) {
+            return res.status(401).json({ status: "FAIL", data: { message: "You do not have permission to update the Cart" } });
+        }
+        const cartId = req.params.cartId;
+        const productIdToUpdate = req.params.productIdToUpdate;
+        const updates = req.body;
 
-//         // Check if the cart exists
-//         const existingCart = await CartModel.findById(cartId);
+        // Check if the cart exists
+        const existingCart = await CartModel.findById(cartId);
 
-//         if (!existingCart) {
-//             return res.status(404).json({ status: "FAIL", data: { message: 'Cart not found' } });
-//         }
+        if (!existingCart) {
+            return res.status(404).json({ status: "FAIL", data: { message: 'Cart not found' } });
+        }
 
-//         // Check if the user has permission to update this cart
-//         if (existingCart.orderBy.toString() !== req.userid) {
-//             return res.status(403).json({ status: "FAIL", data: { message: 'You do not have permission to update this cart' } });
-//         }
+        // Check if the user has permission to update this cart
+        if (existingCart.orderBy.toString() !== req.userid) {
+            return res.status(403).json({ status: "FAIL", data: { message: 'You do not have permission to update this cart' } });
+        }
 
-//         // Find the index of the product to update in the cart
-//         const productIndex = existingCart.cart.findIndex(product => product.product.toString() === productIdToUpdate);
+        // Find the index of the product to update in the cart
+        const productIndex = existingCart.cart.findIndex(product => product.product.toString() === productIdToUpdate);
 
-//         if (productIndex === -1) {
-//             return res.status(404).json({ status: "FAIL", data: { message: 'Product not found in the cart' } });
-//         }
+        if (productIndex === -1) {
+            return res.status(404).json({ status: "FAIL", data: { message: 'Product not found in the cart' } });
+        }
 
-//         // Update the count of the specific product
-//         existingCart.cart[productIndex].count = updates.count;
+        // Update the count of the specific product
+        existingCart.cart[productIndex].count = updates.count;
 
-//         // Recalculate the total price and total price after discount in the cart
-//          existingCart.totalPrice = existingCart.cart.reduce((total, product) => total + (product.price * product.count), 0);
+        // Recalculate the total price and total price after discount in the cart
+         existingCart.totalPrice = existingCart.cart.reduce((total, product) => total + (product.price * product.count), 0);
         
-//         const updatedCart = await existingCart.save();
+        const updatedCart = await existingCart.save();
 
-//         res.status(200).json({ status: "SUCCESS", message: "Cart updated successfully", data: updatedCart });
-//     } catch (error) {
-//         res.status(500).json({ status: "ERROR", message: error.message, data: null });
-//     }
-// };
+        res.status(200).json({ status: "SUCCESS", message: "Cart updated successfully", data: updatedCart });
+    } catch (error) {
+        res.status(500).json({ status: "ERROR", message: error.message, data: null });
+    }
+};
 
 export const getUserOrder = async (req, res) => {
     try {
@@ -247,37 +247,35 @@ export const getUserOrder = async (req, res) => {
 
 // updateCart endpoint
 
-// updateCart endpoint
+// export const updateCart = async (req, res) => {
+//     try {
+//         if (!req.userid) {
+//             return res.status(401).json({ status: "FAIL", data: { message: "You do not have permission to update the Cart" } });
+//         }
+//         const cartId = req.params.cartId;
+//         const updatedCartData = req.body; // Corrected variable name
 
-export const updateCart = async (req, res) => {
-    try {
-        if (!req.userid) {
-            return res.status(401).json({ status: "FAIL", data: { message: "You do not have permission to update the Cart" } });
-        }
-        const cartId = req.params.cartId;
-        const updatedCartData = req.body; // Corrected variable name
+//         // Check if the cart exists
+//         const existingCart = await CartModel.findById(cartId);
 
-        // Check if the cart exists
-        const existingCart = await CartModel.findById(cartId);
+//         if (!existingCart) {
+//             return res.status(404).json({ status: "FAIL", data: { message: 'Cart not found' } });
+//         }
 
-        if (!existingCart) {
-            return res.status(404).json({ status: "FAIL", data: { message: 'Cart not found' } });
-        }
+//         // Check if the user has permission to update this cart
+//         if (existingCart.orderBy.toString() !== req.userid) {
+//             return res.status(403).json({ status: "FAIL", data: { message: 'You do not have permission to update this cart' } });
+//         }
 
-        // Check if the user has permission to update this cart
-        if (existingCart.orderBy.toString() !== req.userid) {
-            return res.status(403).json({ status: "FAIL", data: { message: 'You do not have permission to update this cart' } });
-        }
-
-        // Update the entire cart object
-        existingCart.cart = updatedCartData;
-        // Recalculate the total price and total price after discount in the cart
-        existingCart.totalPrice = updatedCartData.reduce((total, product) => total + (product.price * product.count), 0);
+//         // Update the entire cart object
+//         existingCart.cart = updatedCartData;
+//         // Recalculate the total price and total price after discount in the cart
+//         existingCart.totalPrice = updatedCartData.reduce((total, product) => total + (product.price * product.count), 0);
         
-        const updatedCart = await existingCart.save();
+//         const updatedCart = await existingCart.save();
 
-        res.status(200).json({ status: "SUCCESS", message: "Cart updated successfully", data: updatedCart });
-    } catch (error) {
-        res.status(500).json({ status: "ERROR", message: error.message, data: null });
-    }
-};
+//         res.status(200).json({ status: "SUCCESS", message: "Cart updated successfully", data: updatedCart });
+//     } catch (error) {
+//         res.status(500).json({ status: "ERROR", message: error.message, data: null });
+//     }
+// };
